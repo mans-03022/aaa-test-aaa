@@ -1,6 +1,7 @@
 # サンプル: SQLインジェクション脆弱性を含むPythonコード
 import sqlite3
 from flask import Flask, request
+import os
 
 app = Flask(__name__)
 
@@ -27,6 +28,13 @@ def login():
         return 'Login successful!'
     else:
         return 'Login failed!'
+
+@app.route('/ping', methods=['POST'])
+def ping():
+    host = request.form['host']
+    # コマンドインジェクションの脆弱性
+    os.system(f'ping -c 1 {host}')
+    return 'Ping executed!'
 
 if __name__ == '__main__':
     init_db()
